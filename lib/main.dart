@@ -1,14 +1,22 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'firebase_options.dart';
 import 'screens/halaman_auth.dart';
+import 'screens/halaman_jajan.dart';
 import 'services/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inisialisasi format tanggal dan waktu Indonesia.
+  await initializeDateFormatting('id_ID', null);
+
+  // Inisialisasi Firebase.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const MyApp());
 }
 
@@ -19,13 +27,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Jajan Meter',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: Colors.blue, useMaterial3: true),
       home: const AuthGate(),
     );
   }
 }
 
-/// Sementara, nanti diganti aturan redirect go_router oleh Agnie.
+/// Mengatur halaman berdasarkan status login pengguna.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -33,30 +42,32 @@ class AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: AuthService().statusLogin,
-      builder: (context, snap) {
-        if (snap.connectionState == ConnectionState.waiting) {
+      builder: (context, snapshot) {
+        // Menampilkan loading saat memeriksa status login.
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
-        final user = snap.data;
-        if (user == null) return const HalamanAuth();
-        return Scaffold(
-          appBar: AppBar(title: const Text('Jajan Meter')),
-          body: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Masuk sebagai ${user.email}'),
-                const SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () => AuthService().keluar(),
-                  child: const Text('Keluar'),
-                ),
-              ],
+
+        // Jika terjadi error saat memeriksa autentikasi.
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Text('Terjadi kesalahan autentikasi: ${snapshot.error}'),
             ),
-          ),
-        );
+          );
+        }
+
+        final user = snapshot.data;
+
+        // Jika belum login, tampilkan halaman autentikasi.
+        if (user == null) {
+          return const HalamanAuth();
+        }
+
+        // Jika sudah login, tampilkan halaman transaksi.
+        return const HalamanJajan();
       },
     );
   }

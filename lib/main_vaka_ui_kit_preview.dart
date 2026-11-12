@@ -21,7 +21,7 @@ class JajanUiKitPreviewApp extends StatefulWidget {
 
 class _JajanUiKitPreviewAppState extends State<JajanUiKitPreviewApp> {
   ThemeMode _themeMode = ThemeMode.light;
-  String _selectedCategory = 'Makan berat';
+  String _selectedCategory = 'Makan';
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +82,22 @@ class _JajanUiKitPreviewAppState extends State<JajanUiKitPreviewApp> {
                           spacing: 10,
                           runSpacing: 10,
                           children: const [
-                            _ColorSwatch(label: 'Biru', color: JajanColors.blue),
-                            _ColorSwatch(label: 'Hijau', color: JajanColors.green),
-                            _ColorSwatch(label: 'Emas', color: JajanColors.gold),
-                            _ColorSwatch(label: 'Merah', color: JajanColors.red),
+                            _ColorSwatch(
+                              label: 'Biru',
+                              color: JajanColors.blue,
+                            ),
+                            _ColorSwatch(
+                              label: 'Hijau',
+                              color: JajanColors.green,
+                            ),
+                            _ColorSwatch(
+                              label: 'Emas',
+                              color: JajanColors.gold,
+                            ),
+                            _ColorSwatch(
+                              label: 'Merah',
+                              color: JajanColors.red,
+                            ),
                           ],
                         ),
                         const SizedBox(height: 22),
@@ -163,10 +175,10 @@ class _JajanUiKitPreviewAppState extends State<JajanUiKitPreviewApp> {
                           runSpacing: 9,
                           children: [
                             for (final category in const [
-                              'Makan berat',
-                              'Kopi/minum',
-                              'Camilan',
+                              'Makan',
+                              'Kopi',
                               'Transport',
+                              'Lainnya',
                             ])
                               JmCategoryChip(
                                 label: category,
@@ -188,7 +200,7 @@ class _JajanUiKitPreviewAppState extends State<JajanUiKitPreviewApp> {
                         const SizedBox(height: 12),
                         const JmTransactionTile(
                           title: 'Kopi Susu',
-                          subtitle: 'Kopi/minum · 10.30',
+                          subtitle: 'Kopi · 10.30',
                           amount: '-Rp25.000',
                           icon: Icons.coffee_rounded,
                         ),
@@ -212,10 +224,7 @@ class _JajanUiKitPreviewAppState extends State<JajanUiKitPreviewApp> {
 }
 
 class _ColorSwatch extends StatelessWidget {
-  const _ColorSwatch({
-    required this.label,
-    required this.color,
-  });
+  const _ColorSwatch({required this.label, required this.color});
 
   final String label;
   final Color color;

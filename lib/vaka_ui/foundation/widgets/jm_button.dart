@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/jajan_colors.dart';
 
-/// Tombol bersama dengan tinggi, radius, dan bobot visual konsisten.
+/// Tombol bersama: callback null/loading = nonaktif, tinggi minimum 56.
 class JmButton extends StatelessWidget {
   const JmButton({
     super.key,
@@ -15,7 +15,6 @@ class JmButton extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
   });
-
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
@@ -24,74 +23,73 @@ class JmButton extends StatelessWidget {
   final bool outlined;
   final Color? backgroundColor;
   final Color? foregroundColor;
-
   @override
   Widget build(BuildContext context) {
-    final foreground = foregroundColor ??
-        (outlined ? JajanColors.blue : Colors.white);
-    final child = isLoading
+    final scheme = Theme.of(context).colorScheme;
+    final callback = isLoading ? null : onPressed;
+    final color = backgroundColor ?? JajanColors.green;
+    final foreground =
+        foregroundColor ?? (outlined ? JajanColors.blue : Colors.white);
+    final content = isLoading
         ? SizedBox(
-            width: 19,
-            height: 19,
+            width: 20,
+            height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: foreground,
+              color: scheme.onSurfaceVariant,
             ),
           )
-        : Text(label);
-
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 22),
+                const SizedBox(width: 8),
+              ],
+              Flexible(child: Text(label, textAlign: TextAlign.center)),
+            ],
+          );
     final button = outlined
         ? OutlinedButton(
-            onPressed: isLoading ? null : onPressed,
+            onPressed: callback,
             style: OutlinedButton.styleFrom(
               foregroundColor: foreground,
-              minimumSize: const Size(0, 52),
-              padding: const EdgeInsets.symmetric(horizontal: 22),
-              side: BorderSide(color: backgroundColor ?? JajanColors.blue),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(28),
-              ),
+              minimumSize: const Size(48, 56),
+              shape: const StadiumBorder(),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             ),
-            child: child,
+            child: content,
           )
-        : (icon != null && !isLoading)
-            ? ElevatedButton.icon(
-                onPressed: onPressed,
-                icon: Icon(icon, size: 19),
-                label: Text(label),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: backgroundColor ?? JajanColors.green,
-                  foregroundColor: foreground,
-                  minimumSize: const Size(0, 52),
-                  elevation: 3,
-                  shadowColor:
-                      (backgroundColor ?? JajanColors.green).withValues(alpha: 0.35),
-                  padding: const EdgeInsets.symmetric(horizontal: 22),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
-                  ),
+        : Container(
+            margin: const EdgeInsets.only(bottom: 6),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40),
+              boxShadow: [
+                BoxShadow(
+                  color: callback == null
+                      ? scheme.outlineVariant
+                      : Color.lerp(color, Colors.black, .22)!,
+                  offset: const Offset(0, 6),
                 ),
-              )
-            : ElevatedButton(
-                onPressed: isLoading ? null : onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: backgroundColor ?? JajanColors.green,
-                  foregroundColor: foreground,
-                  minimumSize: const Size(0, 52),
-                  elevation: 3,
-                  shadowColor:
-                      (backgroundColor ?? JajanColors.green).withValues(alpha: 0.35),
-                  padding: const EdgeInsets.symmetric(horizontal: 22),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
-                  ),
+              ],
+            ),
+            child: FilledButton(
+              onPressed: callback,
+              style: FilledButton.styleFrom(
+                backgroundColor: color,
+                foregroundColor: foreground,
+                minimumSize: const Size(48, 56),
+                disabledBackgroundColor: scheme.outlineVariant,
+                disabledForegroundColor: scheme.onSurfaceVariant,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
                 ),
-                child: child,
-              );
-
-    return SizedBox(
-      width: expand ? double.infinity : null,
-      child: button,
-    );
+              ),
+              child: content,
+            ),
+          );
+    return SizedBox(width: expand ? double.infinity : null, child: button);
   }
 }

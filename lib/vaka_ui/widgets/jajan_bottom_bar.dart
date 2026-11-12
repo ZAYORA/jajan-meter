@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../jajan_theme.dart';
+import '../navigation/jajan_destinations.dart';
 
-const jajanTabLabels = ['Beranda', 'Statistik', 'Target', 'Pengaturan'];
-const jajanTabRoutes = ['/', '/statistik', '/target', '/pengaturan'];
-const _tabIcons = [
-  Icons.home_outlined,
-  Icons.bar_chart_outlined,
-  Icons.track_changes_outlined,
-  Icons.tune_outlined,
-];
+const jajanTabLabels = ['Beranda', 'Riwayat', 'Statistik', 'Lencana'];
+const jajanTabRoutes = ['/', '/riwayat', '/statistik', '/streak'];
 
-/// Agnie dapat memasang komponen ini pada Scaffold milik ShellRoute.
-/// onSelected menjadi titik sambung ke context.go(jajanTabRoutes[index]).
 class JajanBottomBar extends StatelessWidget {
   const JajanBottomBar({
     super.key,
@@ -21,74 +14,82 @@ class JajanBottomBar extends StatelessWidget {
   });
   final int selectedIndex;
   final ValueChanged<int> onSelected;
-
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: JajanColors.border)),
-          ),
-          child: Row(
-            children: List.generate(4, (index) {
-              final selected = selectedIndex == index;
-              final color = selected ? JajanColors.blue : JajanColors.muted;
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: Semantics(
-                    button: true,
-                    selected: selected,
-                    label: jajanTabLabels[index],
-                    onTap: () => onSelected(index),
-                    child: ExcludeSemantics(
-                      child: InkWell(
-                        key: ValueKey('tab_$index'),
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () => onSelected(index),
-                        child: Ink(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 2,
-                          ),
+  Widget build(BuildContext context) => SafeArea(
+    top: false,
+    child: Container(
+      margin: const EdgeInsets.fromLTRB(16, 6, 16, 14),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+      decoration: BoxDecoration(
+        color: context.cardColor,
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(color: context.lineColor, width: 2),
+        boxShadow: [
+          BoxShadow(color: context.lineColor, offset: const Offset(0, 6)),
+        ],
+      ),
+      child: Row(
+        children: List.generate(4, (index) {
+          final selected = selectedIndex == index;
+          return Expanded(
+            child: Semantics(
+              button: true,
+              selected: selected,
+              label: jajanTabLabels[index],
+              onTap: () => onSelected(index),
+              child: ExcludeSemantics(
+                child: InkWell(
+                  key: ValueKey('tab_$index'),
+                  borderRadius: BorderRadius.circular(28),
+                  onTap: () => onSelected(index),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color: selected
-                                ? JajanColors.paleBlue
+                                ? JajanColors.blue
                                 : Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: selected
+                                ? const [
+                                    BoxShadow(
+                                      color: Color(0xFF148CC3),
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ]
+                                : null,
                           ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(_tabIcons[index], color: color, size: 26),
-                              const SizedBox(height: 6),
-                              Text(
-                                jajanTabLabels[index],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 10,
-                                  fontWeight: selected
-                                      ? FontWeight.w700
-                                      : FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                          child: Icon(
+                            jajanDestinations[index].icon,
+                            color: selected ? Colors.white : context.mutedColor,
+                            size: 24,
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 6),
+                        Text(
+                          jajanTabLabels[index],
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: selected
+                                ? JajanColors.blue
+                                : context.mutedColor,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              );
-            }),
-          ),
-        ),
+              ),
+            ),
+          );
+        }),
       ),
-    );
-  }
+    ),
+  );
 }

@@ -7,6 +7,7 @@ import 'package:jajan_meter/vaka_ui/preview/preview_app.dart';
 import 'package:jajan_meter/vaka_ui/widgets/budget_card.dart';
 import 'package:jajan_meter/vaka_ui/widgets/jajan_choice_chips.dart';
 import 'package:jajan_meter/vaka_ui/widgets/jajan_tile.dart';
+import 'package:jajan_meter/vaka_ui/widgets/jajan_surface.dart';
 
 Widget wrap(Widget child) => MaterialApp(
   theme: buildJajanTheme(),
@@ -145,7 +146,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     }
-    expect(find.text('Halo, anak jajan!'), findsOneWidget);
+    expect(find.text('Halo, Budi!'), findsOneWidget);
   });
 
   testWidgets('tombol pratinjau tetap nonaktif untuk kosong dan nol', (
@@ -163,22 +164,25 @@ void main() {
         );
     await reveal(save, 200);
     await tester.pumpAndSettle();
-    expect(tester.widget<FilledButton>(save).onPressed, isNull);
+    expect(tester.widget<JajanActionButton>(save).onPressed, isNull);
     final input = find.byKey(const ValueKey('nominal_input'));
     await reveal(input, -200);
     await tester.enterText(input, '0');
-    await reveal(find.byKey(const ValueKey('choice_kopi')), 150);
-    await tester.tap(find.byKey(const ValueKey('choice_kopi')));
+    await reveal(find.byKey(const ValueKey('category_kopi')), 150);
+    await tester.tap(find.byKey(const ValueKey('category_kopi')));
+    await tester.pump();
+    await reveal(find.byKey(const ValueKey('choice_lapar')), 150);
+    await tester.tap(find.byKey(const ValueKey('choice_lapar')));
     await tester.pump();
     await reveal(save, 200);
     await tester.pumpAndSettle();
-    expect(tester.widget<FilledButton>(save).onPressed, isNull);
+    expect(tester.widget<JajanActionButton>(save).onPressed, isNull);
     await reveal(input, -200);
     await tester.enterText(input, '15000');
     await tester.pump();
     await reveal(save, 200);
     await tester.pumpAndSettle();
-    expect(tester.widget<FilledButton>(save).onPressed, isNotNull);
+    expect(tester.widget<JajanActionButton>(save).onPressed, isNotNull);
     await tester.tap(save);
     await tester.pump();
     expect(

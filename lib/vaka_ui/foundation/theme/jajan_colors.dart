@@ -19,4 +19,14 @@ abstract final class JajanColors {
   static const Color darkBorder = Color(0xFF344B5D);
   static const Color darkText = Color(0xFFF7FAFC);
   static const Color darkMuted = Color(0xFFA9BAC9);
+  // Alias untuk komponen minggu 1–2; semua nilai tetap berasal dari fondasi ini.
+  static const yellow = gold;
+  static const danger = red;
+  static const background = lightBackground;
+  static const surface = lightSurface;
+  static const ink = lightText;
+  static const muted = lightMuted;
+  static const border = lightBorder;
+  static const paleBlue = Color(0xFFECF8FF);
+  static const paleYellow = Color(0xFFFFF8CE);
 }

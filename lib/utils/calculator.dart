@@ -60,7 +60,8 @@ class JajanCalculator {
 
         total += nominal;
         totalPerHari[hari] = (totalPerHari[hari] ?? 0) + nominal;
-        totalPerKategori[kategori] = (totalPerKategori[kategori] ?? 0) + nominal;
+        totalPerKategori[kategori] =
+            (totalPerKategori[kategori] ?? 0) + nominal;
 
         if (alasan.isNotEmpty) {
           totalPerAlasan[alasan] = (totalPerAlasan[alasan] ?? 0) + nominal;
@@ -68,12 +69,14 @@ class JajanCalculator {
       }
     }
 
-    String hariTerboros = totalPerHari.isNotEmpty 
-        ? totalPerHari.entries.reduce((a, b) => a.value > b.value ? a : b).key 
+    String hariTerboros = totalPerHari.isNotEmpty
+        ? totalPerHari.entries.reduce((a, b) => a.value > b.value ? a : b).key
         : '-';
-    
-    String kategoriTerbanyak = totalPerKategori.isNotEmpty 
-        ? totalPerKategori.entries.reduce((a, b) => a.value > b.value ? a : b).key 
+
+    String kategoriTerbanyak = totalPerKategori.isNotEmpty
+        ? totalPerKategori.entries
+              .reduce((a, b) => a.value > b.value ? a : b)
+              .key
         : '-';
 
     String alasanTerbanyak = totalPerAlasan.isNotEmpty

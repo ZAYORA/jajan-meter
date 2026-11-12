@@ -1,3 +1,5 @@
+> **Pembaruan 12 November 2026:** dokumen ini adalah arsip desain lama. Untuk tema, tab, kategori, layout tablet, dan cara uji yang berlaku, baca [vaka-tahap-1-3.md](vaka-tahap-1-3.md). Komponen di lib/vaka_ui telah diperbarui sesuai UI Kit final.
+
 # Serah terima komponen Vaka — minggu 1–2
 
 Dasar: proposal final, ekspor UI Agnie, dan main `a34fccc`. Login wajib email/kata sandi mengikuti arahan terbaru kelompok, menggantikan autentikasi anonim atau keterangan tanpa akun pada materi lama.

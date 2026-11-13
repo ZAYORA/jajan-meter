@@ -7,14 +7,27 @@ https://www.figma.com/design/QkNqoG5ebjW8THknRUuLaJ/Untitled?node-id=0-1&t=jijvB
 
 ---
 
-## 🎨 Palet Warna (Color Palette)
+## 🎨 Palet Warna (UI Kit final, diperbarui 13 November 2026)
 
 | Kategori | Warna | Hex Code | Penggunaan Utama |
 | :--- | :--- | :--- | :--- |
-| **Primary** | Biru | `#2563EB` | Header, Button Utama, Navigasi Active |
-| **Secondary** | Kuning | `#FBBF24` | Accents, Badge, Highlighting |
-| **Warning/Highlight** | Oranye | `#F97316` | Alert, Streak Count, CTA Khusus |
-| **Background** | Terang / Gelap | `#F8FAFC` / `#0F172A` | Latar belakang aplikasi (Mode Terang/Gelap) |
+| **Primary** | Biru | `#1CB0F6` | Identitas, navigasi aktif, aksi sekunder |
+| **Action** | Hijau | `#58CC02` | Simpan dan lanjut |
+| **Achievement** | Emas | `#FFC800` | Penanda pilihan/pencapaian |
+| **Expense / danger** | Merah | `#FF4B4B` | Pengeluaran dan hapus |
+| **Background** | Terang / gelap | `#F7F7F7` / `#101E2B` | Latar aplikasi |
+
+Acuan terbaru: **Fondasi Visual & UI Kit — Design Playbook 1.0**, serta ekspor
+**Untitled (1).zip** (ponsel) dan **Untitled (2).zip** (tablet) dari Agnie.
+Palet ini menggantikan palet lama biru/kuning/oranye. Font Poppins dibundel lokal;
+kartu radius 24, border 2, bayangan padat Y6; tombol pil minimum 56.
+Ponsel acuan 393×852, tablet 1024×1194 logical pixels, masing-masing terang/gelap.
+
+Keputusan tim terbaru: Alasan tetap wajib; empat pilihan kategori
+Makan/Kopi/Transport/Lainnya; nama panggilan untuk sapaan; autentikasi email–kata
+sandi (alamat Gmail boleh), tanpa tombol Google/Apple/Facebook; tanpa hati/nyawa
+atau level. Streak menunggu aturan yang disepakati. Implementasi dan kontrak
+integrasi ada di [docs/vaka-tahap-1-5.md](docs/vaka-tahap-1-5.md).
 
 ---
 

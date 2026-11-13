@@ -29,7 +29,11 @@ class _HalamanAuthState extends State<HalamanAuth> {
         await _auth.masuk(_email.text, _password.text);
       }
     } on AuthException catch (e) {
-      setState(() => _error = e.pesan);
+      if (mounted) setState(() => _error = e.pesan);
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'Belum berhasil memproses akun. Coba lagi.');
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }

@@ -2,15 +2,27 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserRepository {
-  DocumentReference<Map<String, dynamic>> get _ref => FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid);
+  UserRepository({String? uid}) : _sessionUid = uid;
+  final String? _sessionUid;
+
+  String get _uid {
+    final current = FirebaseAuth.instance.currentUser;
+    if (current == null ||
+        (_sessionUid != null && current.uid != _sessionUid)) {
+      throw StateError('Sesi akun sudah berubah.');
+    }
+    return _sessionUid ?? current.uid;
+  }
+
+  DocumentReference<Map<String, dynamic>> get _ref =>
+      FirebaseFirestore.instance.collection('users').doc(_uid);
 
   /// Membuat dokumen pengguna jika belum ada (dipanggil setelah daftar/masuk).
   Future<void> pastikanDokumen() async {
-    final snap = await _ref.get();
+    final ref = _ref;
+    final snap = await ref.get();
     if (!snap.exists) {
-      await _ref.set({
+      await ref.set({
         'jatah_harian': 0,
         'onboarding_selesai': false,
         'tema': 'terang',

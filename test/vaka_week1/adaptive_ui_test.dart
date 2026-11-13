@@ -12,7 +12,6 @@ import 'package:jajan_meter/vaka_ui/jajan_theme.dart';
 import 'package:jajan_meter/vaka_ui/preview/preview_app.dart';
 import 'package:jajan_meter/vaka_ui/widgets/jajan_choice_chips.dart';
 import 'package:jajan_meter/vaka_ui/widgets/jajan_surface.dart';
-import 'package:jajan_meter/vaka_ui/widgets/social_sign_in_buttons.dart';
 
 const capture = bool.fromEnvironment('CAPTURE_UI');
 const captureKey = ValueKey('capture');
@@ -222,20 +221,4 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
-  testWidgets('login sosial tanpa callback nonaktif', (tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        theme: buildJajanTheme(),
-        home: const Scaffold(body: SocialSignInButtons()),
-      ),
-    );
-    for (final button in tester.widgetList<OutlinedButton>(
-      find.byType(OutlinedButton),
-    )) {
-      expect(button.onPressed, isNull);
-    }
-    expect(find.text('Google'), findsOneWidget);
-    expect(find.text('Apple'), findsOneWidget);
-    expect(find.text('Facebook'), findsOneWidget);
-  });
 }

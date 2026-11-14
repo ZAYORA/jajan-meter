@@ -1,9 +1,9 @@
+import '../data/jajan_source.dart';
 import '../models/jajan.dart';
 import '../models/kategori.dart';
-import '../services/jajan_repository.dart';
-import '../services/kategori_repository.dart';
-import '../services/user_repository.dart';
-import 'jajan_source.dart';
+import 'jajan_repository.dart';
+import 'kategori_repository.dart';
+import 'user_repository.dart';
 
 /// Satu instance per sesi akun. UID dipatok agar operasi tertunda tidak
 /// berpindah ke akun baru ketika pengguna keluar/ganti akun.

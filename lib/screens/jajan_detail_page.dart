@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/jajan.dart';
-import '../../providers/jajan_category.dart';
-import '../../providers/jajan_provider.dart';
-import '../../vaka_ui/formatters.dart';
-import '../../vaka_ui/foundation/widgets/jm_button.dart';
-import '../../vaka_ui/jajan_theme.dart';
-import '../../vaka_ui/widgets/jajan_choice_chips.dart';
-import '../../vaka_ui/widgets/jajan_surface.dart';
+import '../models/jajan.dart';
+import '../providers/jajan_category.dart';
+import '../providers/jajan_provider.dart';
+import '../vaka_ui/formatters.dart';
+import '../vaka_ui/foundation/widgets/jm_button.dart';
+import '../vaka_ui/jajan_theme.dart';
+import '../vaka_ui/widgets/jajan_choice_chips.dart';
+import '../vaka_ui/widgets/jajan_surface.dart';
 import 'jajan_shared.dart';
 
 class JajanDetailPage extends StatefulWidget {

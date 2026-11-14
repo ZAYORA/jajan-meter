@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../data/jajan_source.dart';
-import '../features/jajan/jajan_workspace.dart';
 import '../providers/jajan_provider.dart';
+import '../screens/jajan_workspace.dart';
 import '../vaka_ui/jajan_theme.dart';
 
 /// Seluruh Navigator berada di dalam sesi. Mengganti key UID membuang provider,

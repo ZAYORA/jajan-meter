@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/jajan.dart';
-import '../../providers/jajan_provider.dart';
-import '../../vaka_ui/navigation/jajan_adaptive_shell.dart';
-import '../../vaka_ui/navigation/jajan_destinations.dart';
+import '../models/jajan.dart';
+import '../providers/jajan_provider.dart';
+import '../vaka_ui/navigation/jajan_adaptive_shell.dart';
+import '../vaka_ui/navigation/jajan_destinations.dart';
 import 'jajan_detail_page.dart';
 import 'jajan_form_page.dart';
 import 'jajan_history_page.dart';

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/jajan.dart';
-import '../../providers/jajan_category.dart';
-import '../../providers/jajan_provider.dart';
-import '../../vaka_ui/jajan_theme.dart';
-import '../../vaka_ui/widgets/jajan_surface.dart';
-import '../../vaka_ui/widgets/jajan_tile.dart';
+import '../models/jajan.dart';
+import '../providers/jajan_category.dart';
+import '../providers/jajan_provider.dart';
+import '../vaka_ui/jajan_theme.dart';
+import '../vaka_ui/widgets/jajan_surface.dart';
+import '../vaka_ui/widgets/jajan_tile.dart';
 
 String judulJajan(Jajan value) => value.catatan?.trim().isNotEmpty == true
     ? value.catatan!.trim().split('\n').first

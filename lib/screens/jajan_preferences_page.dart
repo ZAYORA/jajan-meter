@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/jajan_provider.dart';
-import '../../vaka_ui/foundation/widgets/jm_button.dart';
-import '../../vaka_ui/jajan_theme.dart';
-import '../../vaka_ui/widgets/budget_card.dart';
-import '../../vaka_ui/widgets/jajan_surface.dart';
+import '../providers/jajan_provider.dart';
+import '../vaka_ui/foundation/widgets/jm_button.dart';
+import '../vaka_ui/jajan_theme.dart';
+import '../vaka_ui/widgets/budget_card.dart';
+import '../vaka_ui/widgets/jajan_surface.dart';
 import 'jajan_shared.dart';
 
 /// Kontrol minimum untuk mencoba jatah/tema dari UserRepository.

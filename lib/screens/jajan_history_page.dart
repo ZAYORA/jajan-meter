@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/jajan.dart';
-import '../../providers/jajan_provider.dart';
-import '../../vaka_ui/formatters.dart';
-import '../../vaka_ui/jajan_theme.dart';
-import '../../vaka_ui/widgets/jajan_choice_chips.dart';
-import '../../vaka_ui/widgets/jajan_surface.dart';
-import '../../vaka_ui/widgets/wallet_mascot.dart';
+import '../models/jajan.dart';
+import '../providers/jajan_provider.dart';
+import '../vaka_ui/formatters.dart';
+import '../vaka_ui/jajan_theme.dart';
+import '../vaka_ui/widgets/jajan_choice_chips.dart';
+import '../vaka_ui/widgets/jajan_surface.dart';
+import '../vaka_ui/widgets/wallet_mascot.dart';
 import 'jajan_shared.dart';
 
 class JajanHistoryPage extends StatelessWidget {

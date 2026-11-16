@@ -4,7 +4,6 @@ import '../jajan_theme.dart';
 import '../navigation/jajan_adaptive_shell.dart';
 import '../navigation/jajan_destinations.dart';
 import '../widgets/jajan_surface.dart';
-import '../widgets/social_sign_in_buttons.dart';
 import 'home_preview_page.dart';
 import 'component_preview_page.dart';
 
@@ -217,24 +216,6 @@ class _SettingsPreview extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'Nama ini hanya untuk mencoba sapaan. Belum disimpan ke akun.',
-            ),
-          ],
-        ),
-      ),
-      const SizedBox(height: 24),
-      JajanSurface(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Komponen login sosial',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 12),
-            const SocialSignInButtons(),
-            const SizedBox(height: 12),
-            const Text(
-              'Google, Apple, dan Facebook belum tersedia. Layanan autentikasi akan disambungkan bersama Zara.',
             ),
           ],
         ),

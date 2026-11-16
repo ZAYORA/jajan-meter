@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/kategori.dart';
 
 class KategoriRepository {
+  KategoriRepository({String? uid}) : _sessionUid = uid;
+  final String? _sessionUid;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String get _uid {
@@ -13,7 +15,11 @@ class KategoriRepository {
       throw Exception('Pengguna belum login.');
     }
 
-    return user.uid;
+    if (_sessionUid != null && user.uid != _sessionUid) {
+      throw StateError('Sesi akun sudah berubah.');
+    }
+
+    return _sessionUid ?? user.uid;
   }
 
   CollectionReference<Map<String, dynamic>> get _collection =>
@@ -40,7 +46,9 @@ class KategoriRepository {
 
     final namaNormalisasi = namaBersih.toLowerCase();
 
-    final duplikat = await _collection
+    // Tangkap koleksi sebelum await; jangan mengalihkan penulisan ke akun baru.
+    final collection = _collection;
+    final duplikat = await collection
         .where('nama_normalisasi', isEqualTo: namaNormalisasi)
         .limit(1)
         .get();
@@ -49,7 +57,9 @@ class KategoriRepository {
       throw Exception('Kategori tersebut sudah tersedia.');
     }
 
-    final dokumen = await _collection.add({
+    // Verifikasi sesi sekali lagi setelah pemeriksaan duplikat selesai.
+    _uid;
+    final dokumen = await collection.add({
       'nama': namaBersih,
       'nama_normalisasi': namaNormalisasi,
       'dibuat_pada': FieldValue.serverTimestamp(),

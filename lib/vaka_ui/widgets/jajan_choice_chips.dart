@@ -143,13 +143,24 @@ class JajanCategoryGrid extends StatelessWidget {
                             color: selected ? Colors.white : JajanColors.blue,
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            '${choice.label}${selected ? ' ✓' : ''}',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: color,
-                              fontWeight: FontWeight.w600,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  choice.label,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: color,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              if (selected) ...[
+                                const SizedBox(width: 4),
+                                Icon(Icons.check, color: color, size: 18),
+                              ],
+                            ],
                           ),
                         ],
                       ),

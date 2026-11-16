@@ -1,3 +1,5 @@
+> Arsip tahap 1–3. Untuk provider, CRUD, dan keputusan terbaru (tanpa login sosial, hati, atau level), lihat [tahap 1–5](vaka-tahap-1-5.md).
+
 # Serah terima Vaka — tema final dan kerangka adaptif (tahap 1–3)
 
 Tanggal: 12 November 2026. Basis integrasi: vaka-frontend efd426d + main 236ccf1 (kartu Rekap Salsa).

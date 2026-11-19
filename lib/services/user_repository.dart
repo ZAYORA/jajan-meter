@@ -1,32 +1,94 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../data/datasources/firebase_user_datasource.dart';
+import '../models/user_model.dart';
 
 class UserRepository {
-  DocumentReference<Map<String, dynamic>> get _ref => FirebaseFirestore.instance
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser!.uid);
+  UserRepository({
+    FirebaseUserDataSource? dataSource,
+    FirebaseAuth? firebaseAuth,
+  }) : _dataSource = dataSource ?? FirebaseUserDataSource(),
+       _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
-  /// Membuat dokumen pengguna jika belum ada (dipanggil setelah daftar/masuk).
-  Future<void> pastikanDokumen() async {
-    final snap = await _ref.get();
-    if (!snap.exists) {
-      await _ref.set({
-        'jatah_harian': 0,
-        'onboarding_selesai': false,
-        'tema': 'terang',
-        'dibuat_pada': FieldValue.serverTimestamp(),
-      });
-    }
+  final FirebaseUserDataSource _dataSource;
+  final FirebaseAuth _firebaseAuth;
+
+  String get _uid {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) throw StateError('Pengguna belum login.');
+    return user.uid;
   }
 
-  Stream<Map<String, dynamic>?> streamPengguna() =>
-      _ref.snapshots().map((s) => s.data());
+  Future<UserModel> pastikanDokumen({String nama = ''}) async {
+    final user = _firebaseAuth.currentUser;
 
-  Future<void> setJatahHarian(int nilai) =>
-      _ref.update({'jatah_harian': nilai});
+    if (user == null) {
+      throw StateError('Pengguna belum login.');
+    }
 
-  Future<void> setTema(String tema) => _ref.update({'tema': tema});
+    final data = await _dataSource.getUser(user.uid);
 
-  Future<void> selesaikanOnboarding() =>
-      _ref.update({'onboarding_selesai': true});
+    if (data == null) {
+      final model = UserModel(
+        uid: user.uid,
+        email: user.email,
+        nama: nama,
+        jatahHarian: 0,
+        onboardingSelesai: false,
+        tema: 'terang',
+      );
+
+      await _dataSource.createUser(user.uid, {
+        ...model.toMap(),
+        'dibuat_pada': FieldValue.serverTimestamp(),
+      });
+
+      return model;
+    }
+
+    final model = UserModel.fromMap(user.uid, data);
+
+    if (nama.isNotEmpty && model.nama.isEmpty) {
+      await _dataSource.updateUser(user.uid, {'nama': nama});
+      return model.copyWith(nama: nama);
+    }
+
+    return model;
+  }
+
+  Future<UserModel?> getPengguna() async {
+    final data = await _dataSource.getUser(_uid);
+
+    if (data == null) return null;
+
+    return UserModel.fromMap(_uid, data);
+  }
+
+  Stream<UserModel?> streamPengguna() {
+    return _dataSource.streamUser(_uid).map((data) {
+      if (data == null) return null;
+      return UserModel.fromMap(_uid, data);
+    });
+  }
+
+  Future<void> setJatahHarian(int nilai) {
+    if (nilai < 0) {
+      throw ArgumentError('Jatah harian tidak boleh negatif.');
+    }
+
+    return _dataSource.updateUser(_uid, {'jatah_harian': nilai});
+  }
+
+  Future<void> setTema(String tema) {
+    if (!['terang', 'gelap', 'sistem'].contains(tema)) {
+      throw ArgumentError('Tema tidak valid.');
+    }
+
+    return _dataSource.updateUser(_uid, {'tema': tema});
+  }
+
+  Future<void> selesaikanOnboarding() {
+    return _dataSource.updateUser(_uid, {'onboarding_selesai': true});
+  }
 }

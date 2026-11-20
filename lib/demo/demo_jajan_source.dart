@@ -6,13 +6,19 @@ import '../models/kategori.dart';
 
 /// Hanya dipakai entrypoint demo dan tes. Tidak terhubung ke Firebase.
 class DemoJajanSource implements JajanSource {
-  DemoJajanSource({DateTime? date, String nama = 'Vaka', bool gelap = false}) {
+  DemoJajanSource({
+    DateTime? date,
+    String nama = 'Vaka',
+    bool gelap = false,
+  }) {
     final day = date ?? DateTime.now();
+
     _profile = {
       'jatah_harian': 100000,
       'nama_panggilan': nama,
       'tema': gelap ? 'gelap' : 'terang',
     };
+
     _items = [
       Jajan(
         id: 'demo-makan',
@@ -42,6 +48,7 @@ class DemoJajanSource implements JajanSource {
         catatan: 'Ojek ke Kampus',
       ),
     ];
+
     _categories = [
       for (final entry in {
         'makan': 'Makan',
@@ -49,46 +56,59 @@ class DemoJajanSource implements JajanSource {
         'transport': 'Transport',
         'lainnya': 'Lainnya',
       }.entries)
-        Kategori(id: 'demo-cat-${entry.key}', nama: entry.value),
+        Kategori(
+          id: 'demo-cat-${entry.key}',
+          nama: entry.value,
+        ),
     ];
   }
+
   late List<Jajan> _items;
   late List<Kategori> _categories;
   late Map<String, dynamic> _profile;
+
   final _jajanEvents = StreamController<List<Jajan>>.broadcast();
   final _categoryEvents = StreamController<List<Kategori>>.broadcast();
-  final _userEvents = StreamController<Map<String, dynamic>?>.broadcast();
+  final _userEvents =
+      StreamController<Map<String, dynamic>?>.broadcast();
+
   int _next = 0;
+
   @override
   Stream<List<Jajan>> streamJajan() => Stream.multi((controller) {
-    final sub = _jajanEvents.stream.listen(
-      controller.add,
-      onError: controller.addError,
-    );
-    controller.add(List.of(_items));
-    controller.onCancel = sub.cancel;
-  });
+        final sub = _jajanEvents.stream.listen(
+          controller.add,
+          onError: controller.addError,
+        );
+        controller.add(List.of(_items));
+        controller.onCancel = sub.cancel;
+      });
+
   @override
   Stream<List<Kategori>> streamKategori() => Stream.multi((controller) {
-    final sub = _categoryEvents.stream.listen(
-      controller.add,
-      onError: controller.addError,
-    );
-    controller.add(List.of(_categories));
-    controller.onCancel = sub.cancel;
-  });
+        final sub = _categoryEvents.stream.listen(
+          controller.add,
+          onError: controller.addError,
+        );
+        controller.add(List.of(_categories));
+        controller.onCancel = sub.cancel;
+      });
+
   @override
-  Stream<Map<String, dynamic>?> streamPengguna() => Stream.multi((controller) {
-    final sub = _userEvents.stream.listen(
-      controller.add,
-      onError: controller.addError,
-    );
-    controller.add(Map.of(_profile));
-    controller.onCancel = sub.cancel;
-  });
+  Stream<Map<String, dynamic>?> streamPengguna() =>
+      Stream.multi((controller) {
+        final sub = _userEvents.stream.listen(
+          controller.add,
+          onError: controller.addError,
+        );
+        controller.add(Map.of(_profile));
+        controller.onCancel = sub.cancel;
+      });
+
   @override
   Future<String> tambahJajan(Jajan value) async {
     final id = 'demo-added-${++_next}';
+
     _items.add(
       Jajan(
         id: id,
@@ -100,6 +120,7 @@ class DemoJajanSource implements JajanSource {
         catatan: value.catatan,
       ),
     );
+
     _jajanEvents.add(List.of(_items));
     return id;
   }
@@ -107,7 +128,11 @@ class DemoJajanSource implements JajanSource {
   @override
   Future<void> ubahJajan(Jajan value) async {
     final i = _items.indexWhere((j) => j.id == value.id);
-    if (i < 0) throw StateError('Transaksi tidak ditemukan.');
+
+    if (i < 0) {
+      throw StateError('Transaksi tidak ditemukan.');
+    }
+
     _items[i] = value;
     _jajanEvents.add(List.of(_items));
   }
@@ -121,7 +146,11 @@ class DemoJajanSource implements JajanSource {
   @override
   Future<String> tambahKategori(String nama) async {
     final id = 'demo-cat-${++_next}';
-    _categories.add(Kategori(id: id, nama: nama));
+
+    _categories.add(
+      Kategori(id: id, nama: nama),
+    );
+
     _categoryEvents.add(List.of(_categories));
     return id;
   }

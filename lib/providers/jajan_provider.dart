@@ -75,6 +75,7 @@ class JajanProvider extends ChangeNotifier {
   String? get actionError => _writeError;
   DateTime get hariIni => _hariIni;
   DateTime get sekarang => _now().toLocal();
+
   String get namaPanggilan {
     final nama = _profil['nama_panggilan'];
     return nama is String && nama.trim().isNotEmpty
@@ -111,20 +112,28 @@ class JajanProvider extends ChangeNotifier {
   List<Jajan> get jajanHariIni => List.unmodifiable(
     _items.where((j) => kunciHari(j.tanggal) == kunciHari(_hariIni)),
   );
+
   int get totalHariIni => JajanCalculator.hitungTotalHariIni(
     _items.map((j) => _row(j)).toList(),
     kunciHari(_hariIni),
   );
+
   int get sisaJatah =>
       JajanCalculator.hitungSisaJatah(jatahHarian, totalHariIni);
+
   double get persenTerpakai =>
       JajanCalculator.hitungPersenTerpakai(totalHariIni, jatahHarian);
+
   double get progresTerpakai => persenTerpakai / 100;
+
   double get persenSisa =>
       hasBudget ? (100 - persenTerpakai).clamp(0.0, 100.0) : 0;
+
   double get progresSisa => persenSisa / 100;
+
   bool get peringatanAktif =>
       JajanCalculator.isPeringatanAktif(sisaJatah, jatahHarian);
+
   String get statusTarget => hasBudget
       ? JajanCalculator.getStatusTarget(totalHariIni, jatahHarian)
       : 'Belum diatur';
@@ -132,6 +141,7 @@ class JajanProvider extends ChangeNotifier {
   PeriodeJajan get periode => _periode;
   DateTime get tanggalFilter => _tanggalFilter;
   String? get kategoriFilter => _kategoriFilter;
+
   DateTime get awalRentang => switch (_periode) {
     PeriodeJajan.hari => _tanggalFilter,
     PeriodeJajan.minggu => DateTime(
@@ -141,6 +151,7 @@ class JajanProvider extends ChangeNotifier {
     ),
     PeriodeJajan.bulan => DateTime(_tanggalFilter.year, _tanggalFilter.month),
   };
+
   DateTime get akhirRentang => switch (_periode) {
     PeriodeJajan.hari => DateTime(
       awalRentang.year,
@@ -154,10 +165,12 @@ class JajanProvider extends ChangeNotifier {
     ),
     PeriodeJajan.bulan => DateTime(awalRentang.year, awalRentang.month + 1),
   };
+
   List<Jajan> _rentang(DateTime start, DateTime end) => _items.where((j) {
     final waktu = j.tanggal.toLocal();
     return !waktu.isBefore(start) && waktu.isBefore(end);
   }).toList();
+
   List<Jajan> get transaksiTerfilter => List.unmodifiable(
     _rentang(awalRentang, akhirRentang).where(
       (j) =>
@@ -165,8 +178,10 @@ class JajanProvider extends ChangeNotifier {
           kelompokKategori(j.kategori) == _kategoriFilter,
     ),
   );
+
   int get totalTerfilter =>
       transaksiTerfilter.fold(0, (total, j) => total + j.nominal);
+
   List<Jajan> get transaksiMingguIni {
     final start = DateTime(
       _hariIni.year,
@@ -183,6 +198,7 @@ class JajanProvider extends ChangeNotifier {
       transaksiMingguIni.map((j) => _row(j, namaHari: true)).toList(),
     ),
   );
+
   Map<String, int> get totalPerHariMingguIni {
     final start = DateTime(
       _hariIni.year,
@@ -214,7 +230,10 @@ class JajanProvider extends ChangeNotifier {
 
   Map<String, int> get totalPerKategoriMingguIni =>
       _kelompok((j) => j.kategori);
-  Map<String, int> get totalPerAlasanMingguIni => _kelompok((j) => j.alasan);
+
+  Map<String, int> get totalPerAlasanMingguIni =>
+      _kelompok((j) => j.alasan);
+
   Jajan? cariJajan(String id) => _items.where((j) => j.id == id).firstOrNull;
 
   void setFilter({PeriodeJajan? periode, DateTime? tanggal}) {
@@ -248,12 +267,15 @@ class JajanProvider extends ChangeNotifier {
     _ready.clear();
     _errors.clear();
     _notify();
+
     // Jangan menahan retry pada acknowledgement pembatalan stream jaringan.
     // Generation guard di semua callback mengabaikan event stream sebelumnya.
     for (final subscription in old) {
       unawaited(subscription.cancel());
     }
+
     if (_disposed || generation != _generation) return;
+
     void listen<T>(
       String name,
       Stream<T> Function() stream,
@@ -289,11 +311,13 @@ class JajanProvider extends ChangeNotifier {
           return date == 0 ? a.id.compareTo(b.id) : date;
         });
     });
+
     listen(
       'kategori',
       _source.streamKategori,
       (data) => _kategori = List.of(data),
     );
+
     listen(
       'profil',
       _source.streamPengguna,
@@ -308,6 +332,7 @@ class JajanProvider extends ChangeNotifier {
     _busy = true;
     _writeError = null;
     _notify();
+
     try {
       final result = await action();
       return _disposed ? null : result;
@@ -331,24 +356,30 @@ class JajanProvider extends ChangeNotifier {
     if (!isReady) {
       throw const FormatException('Tunggu data akun selesai dimuat.');
     }
+
     if (nominal <= 0 || nominal > 999999999999) {
       throw const FormatException(
         'Isi nominal antara Rp1 dan Rp999.999.999.999.',
       );
     }
+
     if (alasan.trim().isEmpty) {
       throw const FormatException('Alasan jajan wajib diisi.');
     }
+
     if (!labelKategori.containsKey(kelompok)) {
       throw const FormatException('Pilih kategori jajan.');
     }
+
     if (original != null && cariJajan(original.id) == null) {
       throw const FormatException(
         'Transaksi ini sudah dihapus. Kembali ke Riwayat.',
       );
     }
+
     String? idKategori;
     String namaKategori;
+
     if (original != null && kelompokKategori(original.kategori) == kelompok) {
       // Termasuk kategori custom/legacy: edit nominal tidak merusak identitasnya.
       idKategori = original.kategoriId;
@@ -358,22 +389,28 @@ class JajanProvider extends ChangeNotifier {
       var existing = _kategori
           .where((k) => k.nama.trim().toLowerCase() == canonical.toLowerCase())
           .firstOrNull;
+
       existing ??= _kategori
           .where(
             (k) =>
                 kelompok != 'lainnya' && kelompokKategori(k.nama) == kelompok,
           )
           .firstOrNull;
+
       existing ??= _createdCategories[kelompok];
+
       if (existing == null) {
         final id = await _source.tambahKategori(canonical);
         existing = Kategori(id: id, nama: canonical);
         _createdCategories[kelompok] = existing;
       }
+
       idKategori = existing.id;
       namaKategori = existing.nama;
     }
+
     if (_disposed) return '';
+
     final value = Jajan(
       id: original?.id ?? '',
       nominal: nominal,
@@ -384,7 +421,9 @@ class JajanProvider extends ChangeNotifier {
       catatan: catatan?.trim().isEmpty ?? true ? null : catatan!.trim(),
       dibuatPada: original?.dibuatPada,
     );
+
     if (original == null) return _source.tambahJajan(value);
+
     await _source.ubahJajan(value);
     return value.id;
   });
@@ -398,6 +437,7 @@ class JajanProvider extends ChangeNotifier {
         return true;
       }) ??
       false;
+
   Future<bool> setJatahHarian(int nilai) async =>
       await _write(() async {
         if (nilai < 0 || nilai > 999999999999) {
@@ -407,24 +447,28 @@ class JajanProvider extends ChangeNotifier {
         return true;
       }) ??
       false;
+
   Future<bool> setNamaPanggilan(String nama) async =>
-    await _write(() async {
-      final value = nama.trim();
+      await _write(() async {
+        final value = nama.trim();
 
-      if (value.isEmpty) {
-        throw const FormatException('Nama panggilan tidak boleh kosong.');
-      }
+        if (value.isEmpty) {
+          throw const FormatException(
+            'Nama panggilan tidak boleh kosong.',
+          );
+        }
 
-      if (value.length > 30) {
-        throw const FormatException(
-          'Nama panggilan maksimal 30 karakter.',
-        );
-      }
+        if (value.length > 30) {
+          throw const FormatException(
+            'Nama panggilan maksimal 30 karakter.',
+          );
+        }
 
-      await _source.setNamaPanggilan(value);
-      return true;
-    }) ??
-    false;
+        await _source.setNamaPanggilan(value);
+        return true;
+      }) ??
+      false;
+
   Future<bool> setTema(bool gelap) async =>
       await _write(() async {
         await _source.setTema(gelap ? 'gelap' : 'terang');
@@ -434,6 +478,7 @@ class JajanProvider extends ChangeNotifier {
 
   String _pesanError(Object e) {
     if (e is FormatException) return e.message;
+
     if (e is FirebaseException) {
       return switch (e.code) {
         'permission-denied' =>
@@ -444,6 +489,7 @@ class JajanProvider extends ChangeNotifier {
         _ => 'Data belum berhasil diproses. Coba lagi.',
       };
     }
+
     return 'Data belum berhasil diproses. Periksa koneksi atau masuk kembali.';
   }
 
@@ -456,9 +502,11 @@ class JajanProvider extends ChangeNotifier {
     _disposed = true;
     ++_generation;
     _timer?.cancel();
+
     for (final subscription in _subscriptions) {
       unawaited(subscription.cancel());
     }
+
     _subscriptions.clear();
     _items = [];
     _kategori = [];

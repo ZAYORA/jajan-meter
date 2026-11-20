@@ -20,8 +20,10 @@ class JajanHomePage extends StatelessWidget {
     required this.onSettings,
     required this.onProfile,
   });
+
   final VoidCallback onAdd, onHistory, onTarget, onSettings, onProfile;
   final ValueChanged<Jajan> onDetail;
+
   @override
   Widget build(BuildContext context) {
     final p = context.watch<JajanProvider>();
@@ -29,10 +31,11 @@ class JajanHomePage extends StatelessWidget {
     final sapaan = hour < 11
         ? 'Selamat pagi'
         : hour < 15
-        ? 'Selamat siang'
-        : hour < 18
-        ? 'Selamat sore'
-        : 'Selamat malam';
+            ? 'Selamat siang'
+            : hour < 18
+                ? 'Selamat sore'
+                : 'Selamat malam';
+
     return JajanPage(
       title: 'Halo, ${p.namaPanggilan}!',
       subtitle: '$sapaan · ${formatTanggal(p.hariIni, denganHari: true)}',
@@ -160,7 +163,9 @@ class JajanHomePage extends StatelessWidget {
                     ),
                   ],
                 );
+
                 if (!wide) return budget;
+
                 return Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

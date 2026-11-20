@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../data/datasources/firebase_auth_datasource.dart';
 import 'user_repository.dart';
 
 class AuthException implements Exception {
   final String pesan;
+
   AuthException(this.pesan);
 
   @override
@@ -11,44 +13,84 @@ class AuthException implements Exception {
 }
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  AuthService({
+    FirebaseAuthDataSource? authDataSource,
+    UserRepository? userRepository,
+  }) : _dataSource = authDataSource ?? FirebaseAuthDataSource(),
+       _userRepository = userRepository ?? UserRepository();
 
-  Stream<User?> get statusLogin => _auth.authStateChanges();
-  User? get penggunaSaatIni => _auth.currentUser;
+  final FirebaseAuthDataSource _dataSource;
+  final UserRepository _userRepository;
 
-  Future<void> daftar(String email, String password) async {
+  Stream<User?> get statusLogin => _dataSource.statusLogin;
+
+  User? get penggunaSaatIni => _dataSource.penggunaSaatIni;
+
+  bool _emailValid(String email) {
+    return RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email.trim());
+  }
+
+  Future<void> daftar(String nama, String email, String password) async {
+    if (nama.trim().isEmpty) {
+      throw AuthException('Nama tidak boleh kosong.');
+    }
+
+    if (nama.trim().length > 30) {
+      throw AuthException('Nama maksimal 30 karakter.');
+    }
+
+    if (email.trim().isEmpty || !_emailValid(email)) {
+      throw AuthException('Format email tidak valid.');
+    }
+
+    if (password.isEmpty) {
+      throw AuthException('Kata sandi tidak boleh kosong.');
+    }
+
+    if (password.length < 6) {
+      throw AuthException('Kata sandi minimal 6 karakter.');
+    }
+
     try {
-      await _auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      await UserRepository().pastikanDokumen();
+      await _dataSource.daftar(email: email.trim(), password: password);
+
+      await _userRepository.pastikanDokumen(nama: nama.trim());
     } on FirebaseAuthException catch (e) {
       throw AuthException(_pesanError(e.code));
     }
   }
 
   Future<void> masuk(String email, String password) async {
+    if (email.trim().isEmpty || !_emailValid(email)) {
+      throw AuthException('Format email tidak valid.');
+    }
+
+    if (password.isEmpty) {
+      throw AuthException('Kata sandi tidak boleh kosong.');
+    }
+
     try {
-      await _auth.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      await UserRepository().pastikanDokumen();
+      await _dataSource.masuk(email: email.trim(), password: password);
+
+      await _userRepository.pastikanDokumen();
     } on FirebaseAuthException catch (e) {
       throw AuthException(_pesanError(e.code));
     }
   }
 
   Future<void> lupaKataSandi(String email) async {
+    if (email.trim().isEmpty || !_emailValid(email)) {
+      throw AuthException('Format email tidak valid.');
+    }
+
     try {
-      await _auth.sendPasswordResetEmail(email: email.trim());
+      await _dataSource.lupaKataSandi(email.trim());
     } on FirebaseAuthException catch (e) {
       throw AuthException(_pesanError(e.code));
     }
   }
 
-  Future<void> keluar() => _auth.signOut();
+  Future<void> keluar() => _dataSource.keluar();
 
   String _pesanError(String kode) {
     switch (kode) {
@@ -68,6 +110,8 @@ class AuthService {
         return 'Terlalu banyak percobaan. Coba lagi nanti.';
       case 'network-request-failed':
         return 'Koneksi bermasalah. Periksa internet lalu coba lagi.';
+      case 'operation-not-allowed':
+        return 'Metode autentikasi email/password belum diaktifkan.';
       default:
         return 'Terjadi kesalahan ($kode). Coba lagi.';
     }

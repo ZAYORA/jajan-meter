@@ -5,13 +5,13 @@ import '../models/jajan.dart';
 import '../providers/jajan_provider.dart';
 import '../vaka_ui/navigation/jajan_adaptive_shell.dart';
 import '../vaka_ui/navigation/jajan_destinations.dart';
-import 'jajan_detail_page.dart';
-import 'jajan_form_page.dart';
-import 'jajan_history_page.dart';
-import 'jajan_home_page.dart';
-import 'jajan_preferences_page.dart';
-import 'jajan_shared.dart';
-import 'profile_page.dart';
+import '../screens/jajan_detail_page.dart';
+import '../screens/jajan_form_page.dart';
+import '../screens/jajan_history_page.dart';
+import '../screens/jajan_home_page.dart';
+import '../screens/jajan_preferences_page.dart';
+import '../screens/jajan_shared.dart';
+import '../screens/profile_page.dart';
 
 class JajanWorkspace extends StatefulWidget {
   const JajanWorkspace({

@@ -12,5 +12,6 @@ abstract interface class JajanSource {
   Future<void> hapusJajan(String id);
   Future<String> tambahKategori(String nama);
   Future<void> setJatahHarian(int nilai);
+  Future<void> setNamaPanggilan(String nama);
   Future<void> setTema(String tema);
 }

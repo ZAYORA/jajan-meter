@@ -33,5 +33,7 @@ class FirebaseJajanSource implements JajanSource {
   @override
   Future<void> setJatahHarian(int nilai) => _user.setJatahHarian(nilai);
   @override
+  Future<void> setNamaPanggilan(String nama) => _user.setNamaPanggilan(nama);
+  @override
   Future<void> setTema(String tema) => _user.setTema(tema);
 }

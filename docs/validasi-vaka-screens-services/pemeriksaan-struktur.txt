@@ -1,0 +1,16 @@
+PASS: lib/features/jajan/jajan_detail_page.dart -> lib/screens/jajan_detail_page.dart; only relative import prefixes changed
+PASS: lib/features/jajan/jajan_form_page.dart -> lib/screens/jajan_form_page.dart; only relative import prefixes changed
+PASS: lib/features/jajan/jajan_history_page.dart -> lib/screens/jajan_history_page.dart; only relative import prefixes changed
+PASS: lib/features/jajan/jajan_home_page.dart -> lib/screens/jajan_home_page.dart; only relative import prefixes changed
+PASS: lib/features/jajan/jajan_preferences_page.dart -> lib/screens/jajan_preferences_page.dart; only relative import prefixes changed
+PASS: lib/features/jajan/jajan_shared.dart -> lib/screens/jajan_shared.dart; only relative import prefixes changed
+PASS: lib/features/jajan/jajan_workspace.dart -> lib/screens/jajan_workspace.dart; only relative import prefixes changed
+PASS: FirebaseJajanSource body and repository calls unchanged
+PASS: lib/app/jajan_session_app.dart behavior unchanged; imports updated
+PASS: lib/app/jajan_application.dart behavior unchanged; imports updated
+PASS: internal imports resolve; expected local-only firebase_options.dart is absent
+PASS: no Dart import refers to old screen/adapter paths
+PASS: models, provider, repositories, dependencies and existing tests unchanged
+PASS: git diff --check
+NOT RUN: Flutter analyze/test/build (SDK setup blocked by automatic approval review due to metadata endpoint access)
+NOT RUN: group Firebase, rules, Android/iOS (group configuration/devices not provided)

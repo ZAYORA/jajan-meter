@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,7 +43,10 @@ class _HalamanAuthState extends State<HalamanAuth> {
             _email.text.trim(),
             _password.text,
           )
-        : await authProvider.masuk(_email.text.trim(), _password.text);
+        : await authProvider.masuk(
+            _email.text.trim(),
+            _password.text,
+          );
 
     if (!mounted) return;
 
@@ -55,7 +59,10 @@ class _HalamanAuthState extends State<HalamanAuth> {
 
     if (pesan != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(pesan), behavior: SnackBarBehavior.floating),
+        SnackBar(
+          content: Text(pesan),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }
@@ -65,14 +72,18 @@ class _HalamanAuthState extends State<HalamanAuth> {
 
     if (email.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Masukkan email terlebih dahulu.')),
+        const SnackBar(
+          content: Text('Masukkan email terlebih dahulu.'),
+        ),
       );
       return;
     }
 
     if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Format email tidak valid.')),
+        const SnackBar(
+          content: Text('Format email tidak valid.'),
+        ),
       );
       return;
     }
@@ -106,26 +117,30 @@ class _HalamanAuthState extends State<HalamanAuth> {
 
   @override
   Widget build(BuildContext context) {
-    final ukuran = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: _background,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 32,
+            ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 430),
               child: Column(
                 children: [
-                  _header(ukuran),
+                  _header(),
                   const SizedBox(height: 28),
                   _kartuForm(),
                   const SizedBox(height: 24),
                   const Text(
                     'Kelola pengeluaran jajanmu dengan lebih bijak.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12, color: Color(0xFF718096)),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF718096),
+                    ),
                   ),
                 ],
               ),
@@ -136,7 +151,7 @@ class _HalamanAuthState extends State<HalamanAuth> {
     );
   }
 
-  Widget _header(Size ukuran) {
+  Widget _header() {
     return Column(
       children: [
         Container(
@@ -222,16 +237,20 @@ class _HalamanAuthState extends State<HalamanAuth> {
               children: [
                 if (_modeDaftar) ...[
                   _label('Nama'),
+                  const SizedBox(height: 8),
                   TextFormField(
                     controller: _nama,
+                    textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (_modeDaftar &&
                           (value == null || value.trim().isEmpty)) {
                         return 'Nama tidak boleh kosong';
                       }
+
                       if (value != null && value.trim().length > 30) {
                         return 'Nama maksimal 30 karakter';
                       }
+
                       return null;
                     },
                     decoration: _inputDecoration(
@@ -241,7 +260,6 @@ class _HalamanAuthState extends State<HalamanAuth> {
                   ),
                   const SizedBox(height: 16),
                 ],
-
                 _label('Email'),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -276,25 +294,24 @@ class _HalamanAuthState extends State<HalamanAuth> {
                   obscureText: !_lihatPassword,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
-                  decoration:
-                      _inputDecoration(
-                        hint: 'Masukkan kata sandi',
-                        icon: Icons.lock_outline_rounded,
-                      ).copyWith(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _lihatPassword = !_lihatPassword;
-                            });
-                          },
-                          icon: Icon(
-                            _lihatPassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: Colors.grey,
-                          ),
-                        ),
+                  decoration: _inputDecoration(
+                    hint: 'Masukkan kata sandi',
+                    icon: Icons.lock_outline_rounded,
+                  ).copyWith(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _lihatPassword = !_lihatPassword;
+                        });
+                      },
+                      icon: Icon(
+                        _lihatPassword
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        color: Colors.grey,
                       ),
+                    ),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Kata sandi wajib diisi.';
@@ -313,7 +330,9 @@ class _HalamanAuthState extends State<HalamanAuth> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: _lupaPassword,
-                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
                       child: const Text(
                         'Lupa kata sandi?',
                         style: TextStyle(
@@ -336,7 +355,8 @@ class _HalamanAuthState extends State<HalamanAuth> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: _biru,
                           foregroundColor: Colors.white,
-                          disabledBackgroundColor: _biru.withValues(alpha: 0.6),
+                          disabledBackgroundColor:
+                              _biru.withValues(alpha: 0.6),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
@@ -352,7 +372,9 @@ class _HalamanAuthState extends State<HalamanAuth> {
                                 ),
                               )
                             : Text(
-                                _modeDaftar ? 'Daftar sekarang' : 'Masuk',
+                                _modeDaftar
+                                    ? 'Daftar sekarang'
+                                    : 'Masuk',
                                 style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -368,15 +390,22 @@ class _HalamanAuthState extends State<HalamanAuth> {
           const SizedBox(height: 24),
           Row(
             children: [
-              Expanded(child: Divider(color: Colors.grey.shade200)),
+              Expanded(
+                child: Divider(color: Colors.grey.shade200),
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   'atau',
-                  style: TextStyle(color: Color(0xFF718096), fontSize: 12),
+                  style: TextStyle(
+                    color: Color(0xFF718096),
+                    fontSize: 12,
+                  ),
                 ),
               ),
-              Expanded(child: Divider(color: Colors.grey.shade200)),
+              Expanded(
+                child: Divider(color: Colors.grey.shade200),
+              ),
             ],
           ),
           const SizedBox(height: 20),
@@ -386,7 +415,9 @@ class _HalamanAuthState extends State<HalamanAuth> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
-                  _modeDaftar ? 'Sudah punya akun? ' : 'Belum punya akun? ',
+                  _modeDaftar
+                      ? 'Sudah punya akun? '
+                      : 'Belum punya akun? ',
                   style: const TextStyle(
                     color: Color(0xFF718096),
                     fontSize: 13,
@@ -394,7 +425,9 @@ class _HalamanAuthState extends State<HalamanAuth> {
                 ),
                 TextButton(
                   onPressed: _ubahMode,
-                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
                   child: Text(
                     _modeDaftar ? 'Masuk' : 'Daftar',
                     style: const TextStyle(
@@ -429,22 +462,37 @@ class _HalamanAuthState extends State<HalamanAuth> {
   }) {
     return InputDecoration(
       hintText: hint,
-      hintStyle: const TextStyle(color: Color(0xFF9AA7B5), fontSize: 13),
-      prefixIcon: Icon(icon, color: _biru, size: 21),
+      hintStyle: const TextStyle(
+        color: Color(0xFF9AA7B5),
+        fontSize: 13,
+      ),
+      prefixIcon: Icon(
+        icon,
+        color: _biru,
+        size: 21,
+      ),
       filled: true,
       fillColor: _background,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 17),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 17,
+      ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Color(0xFFE7EDF2)),
+        borderSide: const BorderSide(
+          color: Color(0xFFE7EDF2),
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: _biru, width: 1.5),
+        borderSide: const BorderSide(
+          color: _biru,
+          width: 1.5,
+        ),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
@@ -452,7 +500,10 @@ class _HalamanAuthState extends State<HalamanAuth> {
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.red, width: 1.5),
+        borderSide: const BorderSide(
+          color: Colors.red,
+          width: 1.5,
+        ),
       ),
     );
   }

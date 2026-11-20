@@ -1,0 +1,8 @@
+HOTFIX TIPOGRAFI JAJAN METER
+
+Ekstrak ZIP ini ke folder utama proyek jajan-meter dan pilih Merge/Replace untuk file jajan_typography.dart saja.
+
+File yang diganti:
+lib/vaka_ui/foundation/theme/jajan_typography.dart
+
+Perbaikan: mengganti GoogleFonts.poppinsTextTheme(base) dengan penerapan GoogleFonts.poppins per TextStyle. Ini menghindari konflik TextTheme antara Flutter SDK Material dan material_ui yang dipakai google_fonts 9.x.

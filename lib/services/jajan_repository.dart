@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/jajan.dart';
 
 class JajanRepository {
+  JajanRepository({String? uid}) : _sessionUid = uid;
+  final String? _sessionUid;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   String get _uid {
@@ -13,7 +15,11 @@ class JajanRepository {
       throw Exception('Pengguna belum login.');
     }
 
-    return user.uid;
+    if (_sessionUid != null && user.uid != _sessionUid) {
+      throw StateError('Sesi akun sudah berubah.');
+    }
+
+    return _sessionUid ?? user.uid;
   }
 
   CollectionReference<Map<String, dynamic>> get _collection =>

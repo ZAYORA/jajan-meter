@@ -120,6 +120,7 @@ class _VakaPreviewShellState extends State<VakaPreviewShell> {
                             setState(() => _nickname = value),
                         onBack: () => _select(0),
                       ),
+                      _DestinationPreview(index: 6, onBack: () => _select(0)),
                     ],
                   ),
           ),

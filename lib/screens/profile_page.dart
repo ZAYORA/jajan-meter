@@ -12,56 +12,68 @@ class ProfilePage extends StatelessWidget {
     super.key,
     required this.onTarget,
     this.onSignOut,
+    this.onBack,
   });
 
   final VoidCallback onTarget;
   final Future<void> Function()? onSignOut;
+  final VoidCallback? onBack;
 
-    Future<void> _editNama(BuildContext context, String namaLama) async {
-    String namaBaru = '';
+  String _ambilEmail() {
+    try {
+      return FirebaseAuth.instance.currentUser?.email ?? 'Email tidak tersedia';
+    } catch (_) {
+      return 'Email tidak tersedia';
+    }
+  }
 
-    final hasil = await showDialog<String>(
+  Future<void> _editNama(BuildContext context, String namaLama) async {
+    final controller = TextEditingController(
+      text: namaLama == 'teman jajan' ? '' : namaLama,
+    );
+
+    final String? hasil;
+    try {
+      hasil = await showDialog<String>(
         context: context,
         builder: (dialogContext) => AlertDialog(
-        title: const Text('Edit nama panggilan'),
-        content: TextField(
+          title: const Text('Edit nama panggilan'),
+          content: TextField(
+            controller: controller,
             maxLength: 30,
             autofocus: true,
-            controller: null,
-            onChanged: (value) {
-            namaBaru = value;
-            },
             decoration: const InputDecoration(
-            labelText: 'Nama panggilan',
-            hintText: 'Masukkan nama panggilan',
+              labelText: 'Nama panggilan',
+              hintText: 'Masukkan nama panggilan',
             ),
-        ),
-        actions: [
+          ),
+          actions: [
             TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Batal'),
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Batal'),
             ),
             FilledButton(
-            onPressed: () {
-                Navigator.pop(dialogContext, namaBaru.trim());
-            },
-            child: const Text('Simpan'),
+              onPressed: () {
+                Navigator.pop(dialogContext, controller.text.trim());
+              },
+              child: const Text('Simpan'),
             ),
-        ],
+          ],
         ),
-    );
+      );
+    } finally {
+      controller.dispose();
+    }
 
     if (hasil == null || !context.mounted) return;
 
     final provider = context.read<JajanProvider>();
 
     if (hasil.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Nama panggilan tidak boleh kosong.'),
-        ),
-        );
-        return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nama panggilan tidak boleh kosong.')),
+      );
+      return;
     }
 
     final berhasil = await provider.setNamaPanggilan(hasil);
@@ -69,15 +81,15 @@ class ProfilePage extends StatelessWidget {
     if (!context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      SnackBar(
         content: Text(
-            berhasil
-                ? 'Nama panggilan berhasil diperbarui.'
-                : provider.actionError ?? 'Nama gagal diperbarui.',
+          berhasil
+              ? 'Nama panggilan berhasil diperbarui.'
+              : provider.actionError ?? 'Nama gagal diperbarui.',
         ),
-        ),
+      ),
     );
-    }
+  }
 
   Future<void> _konfirmasiLogout(BuildContext context) async {
     final yakin = await showDialog<bool>(
@@ -136,15 +148,15 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<JajanProvider>();
-    final user = FirebaseAuth.instance.currentUser;
 
     final nama = provider.namaPanggilan;
-    final email = user?.email ?? 'Email tidak tersedia';
+    final email = _ambilEmail();
     final warna = Theme.of(context).colorScheme;
 
     return JajanPage(
       title: 'Profil Saya',
       subtitle: 'Kelola informasi dan akun Jajan Meter.',
+      onBack: onBack,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -163,10 +175,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                Text(
-                  nama,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(nama, style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 5),
                 Text(
                   email,
@@ -185,10 +194,7 @@ class ProfilePage extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          Text(
-            'Preferensi',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('Preferensi', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 10),
 
           Card(
@@ -217,10 +223,7 @@ class ProfilePage extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          Text(
-            'Lainnya',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('Lainnya', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 10),
 
           Card(

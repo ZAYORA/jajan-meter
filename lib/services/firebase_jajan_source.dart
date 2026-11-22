@@ -21,7 +21,7 @@ class FirebaseJajanSource implements JajanSource {
   @override
   Stream<List<Kategori>> streamKategori() => _kategori.streamKategori();
   @override
-  Stream<Map<String, dynamic>?> streamPengguna() => _user.streamPengguna();
+  Stream<Map<String, dynamic>?> streamPengguna() => _user.streamPenggunaMap();
   @override
   Future<String> tambahJajan(Jajan value) => _jajan.tambahJajan(value);
   @override

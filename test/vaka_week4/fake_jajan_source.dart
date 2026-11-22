@@ -117,6 +117,13 @@ class FakeJajanSource implements JajanSource {
   }
 
   @override
+  Future<void> setNamaPanggilan(String nama) async {
+    await _check();
+    profile['nama_panggilan'] = nama.trim();
+    emitProfile();
+  }
+
+  @override
   Future<void> setTema(String tema) async {
     await _check();
     profile['tema'] = tema;

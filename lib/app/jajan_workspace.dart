@@ -124,7 +124,11 @@ class _JajanWorkspaceState extends State<JajanWorkspace> {
           onProfile: () => _select(6),
         ),
         1 => JajanHistoryPage(onDetail: _detail),
-        6 => ProfilePage(onTarget: () => _select(4), onSignOut: widget.onSignOut),
+        6 => ProfilePage(
+          onTarget: () => _select(4),
+          onSignOut: widget.onSignOut,
+          onBack: () => _select(0),
+        ),
         4 || 5 => JajanPreferencesPage(
           targetOnly: _index == 4,
           onSignOut: widget.onSignOut,

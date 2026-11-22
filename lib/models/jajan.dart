@@ -49,17 +49,30 @@ class Jajan {
     };
   }
 
+  static DateTime? _parseTanggal(Object? raw) {
+    if (raw is Timestamp) return raw.toDate();
+    if (raw is DateTime) return raw;
+    if (raw is String) return DateTime.tryParse(raw);
+    if (raw is int) return DateTime.fromMillisecondsSinceEpoch(raw);
+    return null;
+  }
+
   factory Jajan.fromMap(String id, Map<String, dynamic> map) {
+    final nominalRaw = map['nominal'];
+    final nominal = nominalRaw is num
+        ? nominalRaw.toInt()
+        : int.tryParse(nominalRaw?.toString() ?? '') ?? 0;
+
     return Jajan(
       id: id,
-      nominal: (map['nominal'] as num).toInt(),
+      nominal: nominal,
       kategori: map['kategori'] as String? ?? 'Lainnya',
       kategoriId: map['kategori_id'] as String?,
       alasan: map['alasan'] as String? ?? '',
-      tanggal: (map['tanggal'] as Timestamp).toDate(),
+      tanggal: _parseTanggal(map['tanggal']) ?? DateTime.now(),
       catatan: map['catatan'] as String?,
-      dibuatPada: (map['dibuat_pada'] as Timestamp?)?.toDate(),
-      diubahPada: (map['diubah_pada'] as Timestamp?)?.toDate(),
+      dibuatPada: _parseTanggal(map['dibuat_pada']),
+      diubahPada: _parseTanggal(map['diubah_pada']),
     );
   }
 }

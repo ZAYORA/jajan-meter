@@ -54,7 +54,7 @@ class KategoriRepository {
         .get();
 
     if (duplikat.docs.isNotEmpty) {
-      throw Exception('Kategori tersebut sudah tersedia.');
+      return duplikat.docs.first.id;
     }
 
     // Verifikasi sesi sekali lagi setelah pemeriksaan duplikat selesai.

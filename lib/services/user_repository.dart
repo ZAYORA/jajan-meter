@@ -7,18 +7,26 @@ import '../models/user_model.dart';
 
 class UserRepository {
   UserRepository({
+    String? uid,
     FirebaseUserDataSource? dataSource,
     FirebaseAuth? firebaseAuth,
-  }) : _dataSource = dataSource ?? FirebaseUserDataSource(),
+  }) : _sessionUid = uid,
+       _dataSource = dataSource ?? FirebaseUserDataSource(),
        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
 
+  final String? _sessionUid;
   final FirebaseUserDataSource _dataSource;
   final FirebaseAuth _firebaseAuth;
 
   String get _uid {
     final user = _firebaseAuth.currentUser;
-    if (user == null) throw StateError('Pengguna belum login.');
-    return user.uid;
+    if (user == null) {
+      throw StateError('Pengguna belum login.');
+    }
+    if (_sessionUid != null && user.uid != _sessionUid) {
+      throw StateError('Sesi akun sudah berubah.');
+    }
+    return _sessionUid ?? user.uid;
   }
 
   /// Membuat dokumen pengguna jika belum ada.
@@ -30,13 +38,14 @@ class UserRepository {
       throw StateError('Pengguna belum login.');
     }
 
+    final namaBersih = nama.trim();
     final data = await _dataSource.getUser(user.uid);
 
     if (data == null) {
       final model = UserModel(
         uid: user.uid,
         email: user.email,
-        nama: nama,
+        nama: namaBersih,
         jatahHarian: 0,
         onboardingSelesai: false,
         tema: 'terang',
@@ -52,9 +61,12 @@ class UserRepository {
 
     final model = UserModel.fromMap(user.uid, data);
 
-    if (nama.isNotEmpty && model.nama.isEmpty) {
-      await _dataSource.updateUser(user.uid, {'nama': nama});
-      return model.copyWith(nama: nama);
+    if (namaBersih.isNotEmpty && model.nama.isEmpty) {
+      await _dataSource.updateUser(user.uid, {
+        'nama': namaBersih,
+        'nama_panggilan': namaBersih,
+      });
+      return model.copyWith(nama: namaBersih);
     }
 
     return model;
@@ -62,19 +74,27 @@ class UserRepository {
 
   /// Mengambil data pengguna sekali.
   Future<UserModel?> getPengguna() async {
-    final data = await _dataSource.getUser(_uid);
+    final uid = _uid;
+    final data = await _dataSource.getUser(uid);
 
     if (data == null) return null;
 
-    return UserModel.fromMap(_uid, data);
+    return UserModel.fromMap(uid, data);
   }
 
-  /// Mengambil data pengguna secara realtime.
+  /// Mengambil data pengguna secara realtime dalam bentuk UserModel.
   Stream<UserModel?> streamPengguna() {
-    return _dataSource.streamUser(_uid).map((data) {
+    final uid = _uid;
+    return _dataSource.streamUser(uid).map((data) {
       if (data == null) return null;
-      return UserModel.fromMap(_uid, data);
+      return UserModel.fromMap(uid, data);
     });
+  }
+
+  /// Mengambil data pengguna secara realtime dalam bentuk Map untuk JajanSource.
+  Stream<Map<String, dynamic>?> streamPenggunaMap() {
+    final uid = _uid;
+    return _dataSource.streamUser(uid);
   }
 
   /// Mengubah jatah jajan harian.
@@ -90,8 +110,10 @@ class UserRepository {
 
   /// Mengubah nama panggilan pengguna.
   Future<void> setNamaPanggilan(String nama) {
+    final namaBersih = nama.trim();
     return _dataSource.updateUser(_uid, {
-      'nama_panggilan': nama.trim(),
+      'nama': namaBersih,
+      'nama_panggilan': namaBersih,
     });
   }
 

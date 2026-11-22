@@ -24,6 +24,6 @@ class FirebaseUserDataSource {
   }
 
   Future<void> updateUser(String uid, Map<String, dynamic> data) {
-    return _userRef(uid).update(data);
+    return _userRef(uid).set(data, SetOptions(merge: true));
   }
 }

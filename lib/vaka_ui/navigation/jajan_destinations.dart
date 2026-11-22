@@ -15,5 +15,6 @@ const jajanDestinations = [
   JajanDestination('Lencana', '/streak', Icons.local_fire_department_outlined),
   JajanDestination('Target hemat', '/target', Icons.track_changes_outlined),
   JajanDestination('Pengaturan', '/pengaturan', Icons.tune_outlined),
+  JajanDestination('Profil', '/profil', Icons.person_outline),
 ];
 const jajanTabletBreakpoint = 840.0;

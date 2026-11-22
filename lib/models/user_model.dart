@@ -29,10 +29,14 @@ class UserModel {
       tanggalDibuat = timestamp;
     }
 
+    final rawNama = (map['nama'] as String?)?.trim() ?? '';
+    final rawPanggilan = (map['nama_panggilan'] as String?)?.trim() ?? '';
+    final namaFinal = rawPanggilan.isNotEmpty ? rawPanggilan : rawNama;
+
     return UserModel(
       uid: uid,
       email: map['email'] as String?,
-      nama: map['nama'] as String? ?? '',
+      nama: namaFinal,
       jatahHarian: (map['jatah_harian'] as num?)?.toInt() ?? 0,
       onboardingSelesai: map['onboarding_selesai'] as bool? ?? false,
       tema: map['tema'] as String? ?? 'terang',
@@ -44,6 +48,7 @@ class UserModel {
     return {
       'email': email,
       'nama': nama,
+      'nama_panggilan': nama,
       'jatah_harian': jatahHarian,
       'onboarding_selesai': onboardingSelesai,
       'tema': tema,

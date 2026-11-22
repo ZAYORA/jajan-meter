@@ -77,10 +77,15 @@ class JajanProvider extends ChangeNotifier {
   DateTime get sekarang => _now().toLocal();
 
   String get namaPanggilan {
-    final nama = _profil['nama_panggilan'];
-    return nama is String && nama.trim().isNotEmpty
-        ? nama.trim()
-        : 'teman jajan';
+    final namaPanggilan = _profil['nama_panggilan'];
+    if (namaPanggilan is String && namaPanggilan.trim().isNotEmpty) {
+      return namaPanggilan.trim();
+    }
+    final nama = _profil['nama'];
+    if (nama is String && nama.trim().isNotEmpty) {
+      return nama.trim();
+    }
+    return 'teman jajan';
   }
 
   int get jatahHarian {

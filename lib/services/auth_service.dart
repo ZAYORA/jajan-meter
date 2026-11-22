@@ -90,7 +90,19 @@ class AuthService {
     }
   }
 
-  Future<void> keluar() => _dataSource.keluar();
+  String? _uidTerakhirDipastikan;
+
+  void pastikanDokumenSesi() {
+    final uid = penggunaSaatIni?.uid;
+    if (uid == null || uid == _uidTerakhirDipastikan) return;
+    _uidTerakhirDipastikan = uid;
+    _userRepository.pastikanDokumen().ignore();
+  }
+
+  Future<void> keluar() {
+    _uidTerakhirDipastikan = null;
+    return _dataSource.keluar();
+  }
 
   String _pesanError(String kode) {
     switch (kode) {

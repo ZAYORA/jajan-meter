@@ -11,6 +11,7 @@ import 'jajan_history_page.dart';
 import 'jajan_home_page.dart';
 import 'jajan_preferences_page.dart';
 import 'jajan_shared.dart';
+import 'profile_page.dart';
 
 /// Host navigasi sementara sebelum Agnie memasang GoRouter.
 /// Widget halaman dan JajanAdaptiveShell dapat digunakan langsung di ShellRoute.
@@ -36,7 +37,7 @@ class _JajanWorkspaceState extends State<JajanWorkspace> {
       selectedIndex: _index,
       onSelected: _select,
       nickname: p.namaPanggilan,
-      showMobileNavigation: !route && _index < 4,
+      showMobileNavigation: !route && (_index < 4 || _index == 6),
       child: Column(
         children: [
           if (widget.demo)
@@ -103,8 +104,14 @@ class _JajanWorkspaceState extends State<JajanWorkspace> {
         onHistory: () => _select(1),
         onTarget: () => _select(4),
         onSettings: () => _select(5),
+        onProfile: () => _select(6),
       ),
       1 => JajanHistoryPage(onDetail: _detail),
+      6 => ProfilePage(
+        onTarget: () => _select(4),
+        onSignOut: widget.onSignOut,
+        onBack: () => _select(0),
+      ),
       4 || 5 => JajanPreferencesPage(
         targetOnly: _index == 4,
         onSignOut: widget.onSignOut,

@@ -16,10 +16,18 @@ class Kategori {
   }
 
   factory Kategori.fromMap(String id, Map<String, dynamic> map) {
+    final raw = map['dibuat_pada'];
+    DateTime? dibuatPada;
+    if (raw is Timestamp) {
+      dibuatPada = raw.toDate();
+    } else if (raw is DateTime) {
+      dibuatPada = raw;
+    }
+
     return Kategori(
       id: id,
       nama: map['nama'] as String? ?? '',
-      dibuatPada: (map['dibuat_pada'] as Timestamp?)?.toDate(),
+      dibuatPada: dibuatPada,
     );
   }
 }
